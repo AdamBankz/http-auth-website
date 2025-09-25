@@ -39,7 +39,7 @@ const fingerprint = {
   }
 };
 
-fetch('http://127.0.0.1:5000/generate', {
+fetch('https://http-auth-website.vercel.app/generate', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(fingerprint)
@@ -48,7 +48,7 @@ fetch('http://127.0.0.1:5000/generate', {
 .then(data => {
   console.log(data);
   // Return the next fetch to chain it properly
-  return fetch('http://127.0.0.1:5000/validate', {
+  return fetch('https://http-auth-website.vercel.app/validate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
@@ -60,4 +60,5 @@ fetch('http://127.0.0.1:5000/generate', {
 })
 .catch(error => {
   console.error('Error:', error);
+
 });
