@@ -39,7 +39,7 @@ const fingerprint = {
   }
 };
 
-fetch('https://http-auth-website.vercel.app/generate', {
+fetch('https://http-auth-website.vercel.app/api/generate', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(fingerprint)
@@ -48,7 +48,7 @@ fetch('https://http-auth-website.vercel.app/generate', {
 .then(data => {
   console.log(data);
   // Return the next fetch to chain it properly
-  return fetch('https://http-auth-website.vercel.app/validate', {
+  return fetch('https://http-auth-website.vercel.app/api/validate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
@@ -62,3 +62,4 @@ fetch('https://http-auth-website.vercel.app/generate', {
   console.error('Error:', error);
 
 });
+
