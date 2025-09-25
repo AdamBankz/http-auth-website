@@ -1,41 +1,64 @@
 import jwt
 from datetime import datetime, timedelta
 import json
-from flask import Flask, request, jsonify
-import requests 
-from flask_cors import CORS
 
-secret_key = 'ProtectYourSite'
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["null", "http://localhost:8000"]}})
+secret_key = "ProtectYourSite"
 
-
-@app.route('/generate', methods=['POST'])
-def generate_token():
-    data = request.json 
-    if not data:
-        return jsonify({'error': 'No data provided'}), 400
-
-    payload = data.copy()
-    payload['exp'] = datetime.utcnow() + timedelta(hours=1) 
-    token = jwt.encode(payload, secret_key, algorithm='HS256')
-    
-    return jsonify({'token': token})
-
-
-@app.route('/validate', methods=['POST'])
-def validate_token():
-    data = request.json 
-    if not data:
-        return jsonify({'error': 'No data provided'}), 400
-    
+def handler(request):
     try:
-        payload = jwt.decode(data["token"], secret_key, algorithms=['HS256'])
-        return jsonify({'success': "valid"})
-    except:
-        return jsonify({'success': "invalid"})
+        if request.method == "POST":
+            path = request.path
 
+            # Read body safely
+            try:
+                data = request.json()
+            except:
+                data = None
 
-if __name__ == '__main__':
-    app.run(debug=True)
+            if not data:
+                return {
+                    "statusCode": 400,
+                    "headers": {"Content-Type": "application/json"},
+                    "body": json.dumps({"error": "No data provided"})
+                }
 
+            # Generate token
+            if path.endswith("/generate"):
+                payload = data.copy()
+                payload["exp"] = datetime.utcnow() + timedelta(hours=1)
+                token = jwt.encode(payload, secret_key, algorithm="HS256")
+                return {
+                    "statusCode": 200,
+                    "headers": {"Content-Type": "application/json"},
+                    "body": json.dumps({"token": token})
+                }
+
+            # Validate token
+            elif path.endswith("/validate"):
+                try:
+                    jwt.decode(data["token"], secret_key, algorithms=["HS256"])
+                    return {
+                        "statusCode": 200,
+                        "headers": {"Content-Type": "application/json"},
+                        "body": json.dumps({"success": "valid"})
+                    }
+                except:
+                    return {
+                        "statusCode": 200,
+                        "headers": {"Content-Type": "application/json"},
+                        "body": json.dumps({"success": "invalid"})
+                    }
+
+        # If method not POST
+        return {
+            "statusCode": 405,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"error": "Method not allowed"})
+        }
+
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"error": str(e)})
+        }
