@@ -71,20 +71,23 @@
     const jwtInput = document.getElementById('jwtInput');
     const validateOutput = document.getElementById('validateOutput');
 
-    // Generate token
-    generateBtn.addEventListener('click', async () => {
-      try {
-        const res = await fetch('https://http-auth-website.vercel.app/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(fingerprint)  // send full fingerprint directly
-        });
-        const data = await res.json();
-        jwtOutput.value = data.token || JSON.stringify(data, null, 2);
-      } catch (err) {
-        jwtOutput.value = 'Error fetching token';
+  generateBtn.addEventListener('click', async () => {
+    try {
+      const res = await fetch('https://http-auth-website.vercel.app/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fingerprint)
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
       }
-    });
+      const data = await res.json();
+      jwtOutput.value = data.token || JSON.stringify(data, null, 2);
+    } catch (err) {
+      console.error('Fetch failed:', err);
+      jwtOutput.value = `Error fetching token: ${err.message}`;
+    }
+  });
 
     // Validate token
     validateBtn.addEventListener('click', async () => {
@@ -104,3 +107,4 @@
   </script>
 </body>
 </html>
+
