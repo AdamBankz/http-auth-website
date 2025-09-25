@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/token.py": {
-      "runtime": "vercel-python@0.5.0"
-    }
-  },
   "routes": [
     { "src": "/generate", "dest": "/api/token.py" },
     { "src": "/validate", "dest": "/api/token.py" }
