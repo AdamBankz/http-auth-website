@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "api/token.py": {
+      "runtime": "python3.9"
+    }
+  },
+  "routes": [
+    { "src": "/generate", "dest": "/api/token.py" },
+    { "src": "/validate", "dest": "/api/token.py" }
+  ]
+}
