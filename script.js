@@ -56,8 +56,6 @@ generateBtn.addEventListener('click', async () => {
     const data = await res.json();
     jwtOutput.value = data.token || JSON.stringify(data, null, 2);
 
-    // Optional: auto-fill validate input
-    jwtInput.value = data.token || '';
   } catch (err) {
     console.error('Fetch failed:', err);
     jwtOutput.value = `Error fetching token: ${err.message}`;
@@ -88,3 +86,4 @@ validateBtn.addEventListener('click', async () => {
     validateOutput.value = `Error validating token: ${err.message}`;
   }
 });
+
